@@ -12,6 +12,7 @@
 #define SERIAL_ERR_BUFFER_FILLED -3
 #define SERIAL_ERR_BUFFER_LACK_DATA -4
 #define SERIAL_ERR_DATA_OBSCURE -5
+#define SERIAL_ERR_POINTER_NULL -6
 #define SERIAL_ERR_UNKNOWN -114514
 
 CheckMemberFunctionExistence(serialize)
