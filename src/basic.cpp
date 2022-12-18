@@ -4,7 +4,7 @@
 
 #define __basic_out_endianAdapted(bool_toBigEndian)\
 {\
-  auto wp = a.data[sizeof(obj)]; if(NULL==wp) return ERR_BUFFER_FILLED;\
+  auto wp = a.data[sizeof(obj)]; if(NULL==wp) return SERIAL_ERR_BUFFER_FILLED;\
   memcpy(wp, &obj, sizeof(obj));\
   adaptEndian((char*)wp, sizeof(obj), isBigEndian(), bool_toBigEndian);\
   a.data.push(sizeof(obj));\
@@ -12,229 +12,229 @@
 
 #define __basic_in_endianAdapted(bool_fromBigEndian)\
 {\
-  if(sizeof(obj) > a.data.getLength()) return ERR_BUFFER_LACK_DATA;\
+  if(sizeof(obj) > a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;\
   memcpy(&obj, *(a.data), sizeof(obj));\
   adaptEndian((char*)(&obj), sizeof(obj), bool_fromBigEndian, isBigEndian());\
   a.data.pop(sizeof(obj));\
 }
 
-__basic_serialize_decl_gen(char){
+SERIAL_BASIC_DECL(char){
   switch (a.type)
   {
-  case SerialType::out_binary_littleEndian:
+  case serial_ArchiverType::out_binary_littleEndian:
     __basic_out_endianAdapted(false)
     break;
-  case SerialType::out_binary_bigEndian:
+  case serial_ArchiverType::out_binary_bigEndian:
     __basic_out_endianAdapted(true)
     break;
-  case SerialType::in_binary_littleEndian:
+  case serial_ArchiverType::in_binary_littleEndian:
     __basic_in_endianAdapted(false)
     break;
-  case SerialType::in_binary_bigEndian:
+  case serial_ArchiverType::in_binary_bigEndian:
     __basic_in_endianAdapted(true)
     break;
   default:
-    return ERR_UNKNOWN;
+    return SERIAL_ERR_UNKNOWN;
   }
   return 0;
 }
 
-__basic_serialize_decl_gen(unsigned char){
+SERIAL_BASIC_DECL(unsigned char){
   switch (a.type)
   {
-  case SerialType::out_binary_littleEndian:
+  case serial_ArchiverType::out_binary_littleEndian:
     __basic_out_endianAdapted(false)
     break;
-  case SerialType::out_binary_bigEndian:
+  case serial_ArchiverType::out_binary_bigEndian:
     __basic_out_endianAdapted(true)
     break;
-  case SerialType::in_binary_littleEndian:
+  case serial_ArchiverType::in_binary_littleEndian:
     __basic_in_endianAdapted(false)
     break;
-  case SerialType::in_binary_bigEndian:
+  case serial_ArchiverType::in_binary_bigEndian:
     __basic_in_endianAdapted(true)
     break;
   default:
-    return ERR_UNKNOWN;
+    return SERIAL_ERR_UNKNOWN;
   }
   return 0;
 }
 
-__basic_serialize_decl_gen(int16_t){
+SERIAL_BASIC_DECL(int16_t){
   switch (a.type)
   {
-  case SerialType::out_binary_littleEndian:
+  case serial_ArchiverType::out_binary_littleEndian:
     __basic_out_endianAdapted(false)
     break;
-  case SerialType::out_binary_bigEndian:
+  case serial_ArchiverType::out_binary_bigEndian:
     __basic_out_endianAdapted(true)
     break;
-  case SerialType::in_binary_littleEndian:
+  case serial_ArchiverType::in_binary_littleEndian:
     __basic_in_endianAdapted(false)
     break;
-  case SerialType::in_binary_bigEndian:
+  case serial_ArchiverType::in_binary_bigEndian:
     __basic_in_endianAdapted(true)
     break;
   default:
-    return ERR_UNKNOWN;
+    return SERIAL_ERR_UNKNOWN;
   }
   return 0;
 }
 
-__basic_serialize_decl_gen(uint16_t){
+SERIAL_BASIC_DECL(uint16_t){
   switch (a.type)
   {
-  case SerialType::out_binary_littleEndian:
+  case serial_ArchiverType::out_binary_littleEndian:
     __basic_out_endianAdapted(false)
     break;
-  case SerialType::out_binary_bigEndian:
+  case serial_ArchiverType::out_binary_bigEndian:
     __basic_out_endianAdapted(true)
     break;
-  case SerialType::in_binary_littleEndian:
+  case serial_ArchiverType::in_binary_littleEndian:
     __basic_in_endianAdapted(false)
     break;
-  case SerialType::in_binary_bigEndian:
+  case serial_ArchiverType::in_binary_bigEndian:
     __basic_in_endianAdapted(true)
     break;
   default:
-    return ERR_UNKNOWN;
+    return SERIAL_ERR_UNKNOWN;
   }
   return 0;
 }
 
-__basic_serialize_decl_gen(int32_t){
+SERIAL_BASIC_DECL(int32_t){
   switch (a.type)
   {
-  case SerialType::out_binary_littleEndian:
+  case serial_ArchiverType::out_binary_littleEndian:
     __basic_out_endianAdapted(false)
     break;
-  case SerialType::out_binary_bigEndian:
+  case serial_ArchiverType::out_binary_bigEndian:
     __basic_out_endianAdapted(true)
     break;
-  case SerialType::in_binary_littleEndian:
+  case serial_ArchiverType::in_binary_littleEndian:
     __basic_in_endianAdapted(false)
     break;
-  case SerialType::in_binary_bigEndian:
+  case serial_ArchiverType::in_binary_bigEndian:
     __basic_in_endianAdapted(true)
     break;
   default:
-    return ERR_UNKNOWN;
+    return SERIAL_ERR_UNKNOWN;
   }
   return 0;
 }
 
-__basic_serialize_decl_gen(uint32_t){
+SERIAL_BASIC_DECL(uint32_t){
   switch (a.type)
   {
-  case SerialType::out_binary_littleEndian:
+  case serial_ArchiverType::out_binary_littleEndian:
     __basic_out_endianAdapted(false)
     break;
-  case SerialType::out_binary_bigEndian:
+  case serial_ArchiverType::out_binary_bigEndian:
     __basic_out_endianAdapted(true)
     break;
-  case SerialType::in_binary_littleEndian:
+  case serial_ArchiverType::in_binary_littleEndian:
     __basic_in_endianAdapted(false)
     break;
-  case SerialType::in_binary_bigEndian:
+  case serial_ArchiverType::in_binary_bigEndian:
     __basic_in_endianAdapted(true)
     break;
   default:
-    return ERR_UNKNOWN;
+    return SERIAL_ERR_UNKNOWN;
   }
   return 0;
 }
 
-__basic_serialize_decl_gen(int64_t){
+SERIAL_BASIC_DECL(int64_t){
   switch (a.type)
   {
-  case SerialType::out_binary_littleEndian:
+  case serial_ArchiverType::out_binary_littleEndian:
     __basic_out_endianAdapted(false)
     break;
-  case SerialType::out_binary_bigEndian:
+  case serial_ArchiverType::out_binary_bigEndian:
     __basic_out_endianAdapted(true)
     break;
-  case SerialType::in_binary_littleEndian:
+  case serial_ArchiverType::in_binary_littleEndian:
     __basic_in_endianAdapted(false)
     break;
-  case SerialType::in_binary_bigEndian:
+  case serial_ArchiverType::in_binary_bigEndian:
     __basic_in_endianAdapted(true)
     break;
   default:
-    return ERR_UNKNOWN;
+    return SERIAL_ERR_UNKNOWN;
   }
   return 0;
 }
 
-__basic_serialize_decl_gen(uint64_t){
+SERIAL_BASIC_DECL(uint64_t){
   switch (a.type)
   {
-  case SerialType::out_binary_littleEndian:
+  case serial_ArchiverType::out_binary_littleEndian:
     __basic_out_endianAdapted(false)
     break;
-  case SerialType::out_binary_bigEndian:
+  case serial_ArchiverType::out_binary_bigEndian:
     __basic_out_endianAdapted(true)
     break;
-  case SerialType::in_binary_littleEndian:
+  case serial_ArchiverType::in_binary_littleEndian:
     __basic_in_endianAdapted(false)
     break;
-  case SerialType::in_binary_bigEndian:
+  case serial_ArchiverType::in_binary_bigEndian:
     __basic_in_endianAdapted(true)
     break;
   default:
-    return ERR_UNKNOWN;
+    return SERIAL_ERR_UNKNOWN;
   }
   return 0;
 }
 
-__basic_serialize_decl_gen(float){
+SERIAL_BASIC_DECL(float){
   switch (a.type)
   {
-  case SerialType::out_binary_littleEndian:
+  case serial_ArchiverType::out_binary_littleEndian:
     __basic_out_endianAdapted(false)
     break;
-  case SerialType::out_binary_bigEndian:
+  case serial_ArchiverType::out_binary_bigEndian:
     __basic_out_endianAdapted(true)
     break;
-  case SerialType::in_binary_littleEndian:
+  case serial_ArchiverType::in_binary_littleEndian:
     __basic_in_endianAdapted(false)
     break;
-  case SerialType::in_binary_bigEndian:
+  case serial_ArchiverType::in_binary_bigEndian:
     __basic_in_endianAdapted(true)
     break;
   default:
-    return ERR_UNKNOWN;
+    return SERIAL_ERR_UNKNOWN;
   }
   return 0;
 }
 
-__basic_serialize_decl_gen(double){
+SERIAL_BASIC_DECL(double){
   switch (a.type)
   {
-  case SerialType::out_binary_littleEndian:
+  case serial_ArchiverType::out_binary_littleEndian:
     __basic_out_endianAdapted(false)
     break;
-  case SerialType::out_binary_bigEndian:
+  case serial_ArchiverType::out_binary_bigEndian:
     __basic_out_endianAdapted(true)
     break;
-  case SerialType::in_binary_littleEndian:
+  case serial_ArchiverType::in_binary_littleEndian:
     __basic_in_endianAdapted(false)
     break;
-  case SerialType::in_binary_bigEndian:
+  case serial_ArchiverType::in_binary_bigEndian:
     __basic_in_endianAdapted(true)
     break;
   default:
-    return ERR_UNKNOWN;
+    return SERIAL_ERR_UNKNOWN;
   }
   return 0;
 }
 
-__basic_serialize_decl_gen(std::string){
+SERIAL_BASIC_DECL(std::string){
   switch (a.type)
   {
-  case SerialType::out_binary_littleEndian:
+  case serial_ArchiverType::out_binary_littleEndian:
     // 同大端模式
     // break;
-  case SerialType::out_binary_bigEndian:                                                          {
+  case serial_ArchiverType::out_binary_bigEndian:                                                          {
     if(obj.empty()) return 0;
     // 统计待转义字符的个数
     uint32_t nEscape = 0;
@@ -244,7 +244,7 @@ __basic_serialize_decl_gen(std::string){
       }
     }
 
-    char* wp = (char*)(a.data[obj.size() + nEscape + 1]); if(NULL==wp) return ERR_BUFFER_FILLED;
+    char* wp = (char*)(a.data[obj.size() + nEscape + 1]); if(NULL==wp) return SERIAL_ERR_BUFFER_FILLED;
     for(auto c : obj){//不包括收尾的空字符
       if(c=='\\' || c=='\0'){
         *wp = '\\';
@@ -257,22 +257,22 @@ __basic_serialize_decl_gen(std::string){
 
     a.data.push(obj.size() + nEscape + 1);                                                        }
     break;
-  case SerialType::in_binary_littleEndian:
+  case serial_ArchiverType::in_binary_littleEndian:
     // 同大端模式
     // break;
-  case SerialType::in_binary_bigEndian:                                                           {
-    if(a.data.getLength()<1) return ERR_BUFFER_LACK_DATA;
+  case serial_ArchiverType::in_binary_bigEndian:                                                           {
+    if(a.data.getLength()<1) return SERIAL_ERR_BUFFER_LACK_DATA;
     const char* rp = (const char*)*(a.data);
 
     // 统计原文长度
     uint32_t len = 0;//原文长度
     uint32_t i=0; while(true){
-      if(i>=a.data.getLength()) return ERR_DATA_OBSCURE;//缺收尾符
+      if(i>=a.data.getLength()) return SERIAL_ERR_DATA_OBSCURE;//缺收尾符
       if(rp[i]==0) break;//收尾符
       if(rp[i]=='\\'){//反斜杠
-        if(i+1>=a.data.getLength()) return ERR_DATA_OBSCURE; //反斜杠后面不能没数据了
+        if(i+1>=a.data.getLength()) return SERIAL_ERR_DATA_OBSCURE; //反斜杠后面不能没数据了
         i++;//跳过反斜杠
-        if(rp[i]!='\\' && rp[i]!='\0') return ERR_DATA_OBSCURE;//逃逸字符仅允许2种
+        if(rp[i]!='\\' && rp[i]!='\0') return SERIAL_ERR_DATA_OBSCURE;//逃逸字符仅允许2种
         len++;//有效长度加1
         i++;//下一个
       }else{//普通字符
@@ -292,7 +292,7 @@ __basic_serialize_decl_gen(std::string){
     a.data.pop(i+1);                                                                              }
     break;
   default:
-    return ERR_UNKNOWN;
+    return SERIAL_ERR_UNKNOWN;
   }
   return 0;
 }

@@ -4,21 +4,21 @@
 #include <inttypes.h>
 #include <string>
 
-class Archiver;
+class serial_Archiver;
 
-#define __basic_serialize_decl_gen(Type)\
-int serialize(Archiver& a, Type & obj)
+#define SERIAL_BASIC_DECL(Type)\
+int serialize(serial_Archiver& a, Type & obj)
 
-__basic_serialize_decl_gen(char);
-__basic_serialize_decl_gen(unsigned char);
-__basic_serialize_decl_gen(int16_t);
-__basic_serialize_decl_gen(uint16_t);
-__basic_serialize_decl_gen(int32_t);
-__basic_serialize_decl_gen(uint32_t);
-__basic_serialize_decl_gen(int64_t);
-__basic_serialize_decl_gen(uint64_t);
-__basic_serialize_decl_gen(float);
-__basic_serialize_decl_gen(double);
-__basic_serialize_decl_gen(std::string);
+SERIAL_BASIC_DECL(char);
+SERIAL_BASIC_DECL(unsigned char);
+SERIAL_BASIC_DECL(int16_t);
+SERIAL_BASIC_DECL(uint16_t);
+SERIAL_BASIC_DECL(int32_t);
+SERIAL_BASIC_DECL(uint32_t);
+SERIAL_BASIC_DECL(int64_t);
+SERIAL_BASIC_DECL(uint64_t);
+SERIAL_BASIC_DECL(float);
+SERIAL_BASIC_DECL(double);
+SERIAL_BASIC_DECL(std::string);
 
 #endif // _basic_hpp
