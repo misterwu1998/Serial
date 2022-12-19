@@ -45,6 +45,12 @@ public:
   // 如果两者都不存在，那么直接返回错误码。
   // 这几种情况的条件分支在编译期利用enable_if_t完成选择。
 
+  // 另外，参数有没有被const修饰，完全是两个不同的重载，必须分开给出模板，
+  // 否则const可能被夹在模板参数T中，导致编译期判定FunctionExists_withParam_serialize<serial_Archiver&, T&>::result、
+  // HasMemberFunction_serialize<T>::result都为false。
+
+  // 匹配没有被const修饰的对象
+
   /// @brief 调用非成员serialize()
   /// @tparam T 被序列化或反序列化的对象的类型
   /// @param a 被序列化或反序列化的对象
@@ -52,7 +58,7 @@ public:
   template <typename T,
             EnableIf_ptr<FunctionExists_withParam_serialize<serial_Archiver&, T&>::result
                         > p = nullptr>
-  int memberOrNonMember(T&& a){
+  int memberOrNonMember(T& a){
     return serialize(*this, a);
   }
 
@@ -64,7 +70,7 @@ public:
             EnableIf_ptr<!FunctionExists_withParam_serialize<serial_Archiver&, T&>::result &&
                          HasMemberFunction_serialize<T>::result
                         > p = nullptr>
-  int memberOrNonMember(T&& a){
+  int memberOrNonMember(T& a){
     return a.serialize(*this);
   }
 
@@ -76,7 +82,46 @@ public:
             EnableIf_ptr<!FunctionExists_withParam_serialize<serial_Archiver&, T&>::result &&
                          !HasMemberFunction_serialize<T>::result
                         > p = nullptr>
-  int memberOrNonMember(T&& a){return SERIAL_ERR_NO_SERIALIZE_FUNC;}
+  int memberOrNonMember(T& a){
+    return SERIAL_ERR_NO_SERIALIZE_FUNC;
+  }
+
+  // 匹配没有被const修饰的对象 //
+
+  // 匹配被const修饰的对象
+
+  /// @brief 调用非成员serialize()
+  /// @tparam T 被序列化或反序列化的对象的类型
+  /// @param a 被序列化或反序列化的对象（const&，但会通过const_cast被抹除）
+  /// @return 失败时，返回负数
+  template <typename T,
+            EnableIf_ptr<FunctionExists_withParam_serialize<serial_Archiver&, T&>::result
+                        > p = nullptr>
+  int memberOrNonMember(T const& a){
+    return serialize(*this, const_cast<T&>(a));
+  }
+
+  template <typename T,
+            EnableIf_ptr<!FunctionExists_withParam_serialize<serial_Archiver&, T&>::result &&
+                         HasMemberFunction_serialize<T>::result
+                        > p = nullptr>
+  int memberOrNonMember(T const& a){
+    return a.serialize(*this);
+  }
+
+  /// @brief 没有合适的函数可以调用
+  /// @tparam T 被序列化或反序列化的对象的类型
+  /// @param a 被序列化或反序列化的对象（const&）
+  /// @return SERIAL_ERR_NO_SERIALIZE_FUNC
+  template <typename T, 
+            EnableIf_ptr<!FunctionExists_withParam_serialize<serial_Archiver&, T&>::result &&
+                         !HasMemberFunction_serialize<T>::result
+                        > p = nullptr>
+  int memberOrNonMember(T const& a){
+    return SERIAL_ERR_NO_SERIALIZE_FUNC;
+  }
+
+  // 匹配被const修饰的对象 //
 
   // memberOrNonMember() //
   
@@ -91,11 +136,11 @@ public:
     // if(0>ret) return ret;
     // return epilogue(std::forward<T>(a));
     // 好像没必要转发，左值也OK？试试看
-    auto ret = prologue(a);
+    auto ret = prologue(std::forward<T>(a));
     if(0>ret) return ret;
-    ret = memberOrNonMember(a);
+    ret = memberOrNonMember(a);//如果a是右值引用，传给memberOrNonMember()后将被变成左值引用
     if(0>ret) return ret;
-    return epilogue(a);
+    return epilogue(std::forward<T>(a));
   }
 
   template <typename T0, typename ... Ts> int operator()(T0&& a0, Ts&& ... a){
@@ -103,9 +148,9 @@ public:
     // if(0>ret) return ret;
     // return this->operator()(std::forward<Ts>(a)...);
     // 好像没必要转发，左值也OK？试试看
-    auto ret = this->operator()(a0);
+    auto ret = this->operator()(std::forward<T0>(a0));
     if(0>ret) return ret;
-    return this->operator()(a...);
+    return this->operator()(std::forward<Ts>(a)...);
   }
   
   ~serial_Archiver(){}
