@@ -31,7 +31,23 @@ template <typename E> void foo(std::vector<E>& v){}//define
 #include <map>
 #endif
 
+#define __test_rvalue_to_lvalue 0
+#if __test_rvalue_to_lvalue
+template <typename T> void foo(T& a){
+    return ;
+}
+template <typename T> void FOO(T&& a){
+    foo(a);//调用foo(T& a), 在其内部，a已经是左值引用
+    // foo(std::forward<T>(a));//编译失败
+    return ;
+}
+#endif
+
 int main(int, char**) {
+
+#if __test_rvalue_to_lvalue
+    FOO(114514);
+#endif
 
     Buffer b;
     double d;

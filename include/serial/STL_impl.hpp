@@ -198,7 +198,7 @@ SERIAL_STL_1ARG_DECL(std::set){
     adaptEndian((char*)wp, sizeof(n), isBigEndian(), false);
     a.data.push(sizeof(n));
 
-    for(auto& e : obj){
+    for(auto e : obj){
       auto ret = a(e);
       if(0>ret) return ret;
     }
@@ -241,7 +241,7 @@ SERIAL_STL_1ARG_DECL(std::multiset){
     adaptEndian((char*)wp, sizeof(n), isBigEndian(), false);
     a.data.push(sizeof(n));
 
-    for(auto& e : obj){
+    for(auto e : obj){
       auto ret = a(e);
       if(0>ret) return ret;
     }
@@ -284,7 +284,7 @@ SERIAL_STL_1ARG_DECL(std::unordered_set){
     adaptEndian((char*)wp, sizeof(n), isBigEndian(), false);
     a.data.push(sizeof(n));
 
-    for(auto& e : obj){
+    for(auto e : obj){
       auto ret = a(e);
       if(0>ret) return ret;
     }
@@ -327,7 +327,7 @@ SERIAL_STL_1ARG_DECL(std::unordered_multiset){
     adaptEndian((char*)wp, sizeof(n), isBigEndian(), false);
     a.data.push(sizeof(n));
 
-    for(auto& e : obj){
+    for(auto e : obj){
       auto ret = a(e);
       if(0>ret) return ret;
     }
