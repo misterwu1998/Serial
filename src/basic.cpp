@@ -4,16 +4,16 @@
 
 #define __basic_out_endianAdapted(bool_toBigEndian)\
 {\
-  auto wp = a.data[sizeof(obj)]; if(NULL==wp) return SERIAL_ERR_BUFFER_FILLED;\
+  auto wp = a.tempBuffer[sizeof(obj)]; if(NULL==wp) return SERIAL_ERR_BUFFER_FILLED;\
   memcpy(wp, &obj, sizeof(obj));\
   adaptEndian((char*)wp, sizeof(obj), isBigEndian(), bool_toBigEndian);\
-  a.data.push(sizeof(obj));\
+  a.tempBuffer.push(sizeof(obj));\
 }
 
 #define __basic_in_endianAdapted(bool_fromBigEndian)\
 {\
   if(a.dataStart==NULL) return SERIAL_ERR_UNKNOWN;\
-  if(a.lenHandled + sizeof(obj) > a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;\
+  if(a.lenHandled + sizeof(obj) > a.userBuffer.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;\
   memcpy(&obj, a.dataStart + a.lenHandled, sizeof(obj));\
   adaptEndian((char*)(&obj), sizeof(obj), bool_fromBigEndian, isBigEndian());\
   a.lenHandled += sizeof(obj);\
@@ -245,7 +245,7 @@ SERIAL_BASIC_DECL(std::string){
       }
     }
 
-    char* wp = (char*)(a.data[obj.size() + nEscape + 1]); if(NULL==wp) return SERIAL_ERR_BUFFER_FILLED;
+    char* wp = (char*)(a.tempBuffer[obj.size() + nEscape + 1]); if(NULL==wp) return SERIAL_ERR_BUFFER_FILLED;
     for(auto c : obj){//不包括收尾的空字符
       if(c=='\\' || c=='\0'){
         *wp = '\\';
@@ -256,24 +256,24 @@ SERIAL_BASIC_DECL(std::string){
     }
     *wp = '\0';//收尾的空字符
 
-    a.data.push(obj.size() + nEscape + 1);                                                        }
+    a.tempBuffer.push(obj.size() + nEscape + 1);                                                        }
     break;
   case serial_ArchiverType::in_binary_littleEndian:
     // 同大端模式
     // break;
   case serial_ArchiverType::in_binary_bigEndian:{
     if(a.dataStart==NULL) return SERIAL_ERR_UNKNOWN;
-    if(a.lenHandled>=a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
+    if(a.lenHandled>=a.userBuffer.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
     const char* rp = (const char*)(a.dataStart + a.lenHandled);
 
     // 统计原文长度
     uint32_t len=0;//原文长度
     uint32_t i=0; while(true){
-      if(a.lenHandled + i >= a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;//缺收尾符
+      if(a.lenHandled + i >= a.userBuffer.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;//缺收尾符
       
       if(rp[i]==0) break;//收尾符
       if(rp[i]=='\\'){//反斜杠
-        if(i+1>=a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA; //反斜杠后面不能没数据了
+        if(i+1>=a.userBuffer.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA; //反斜杠后面不能没数据了
         i++;//跳过反斜杠
         if(rp[i]!='\\' && rp[i]!='\0') return SERIAL_ERR_DATA_OBSCURE;//逃逸字符仅允许2种
         len++;//有效长度加1

@@ -25,6 +25,7 @@ enum serial_ArchiverType{
   , in_binary_bigEndian
 };
 
+/// @brief 注意：仅有构造函数和operator()可供用户使用，其它行为都是未定义的
 class serial_Archiver
 {
 private:
@@ -35,20 +36,21 @@ private:
 
   /// @brief 如果调用栈上某层operator()是用户直接调用的，那么它很可能需要做特殊准备
   /// @return 
-  int _prepare(){
+  template <typename ... Ts>
+  int _prepare(Ts&& ... args){
     if(recursiveDepth==1){
       switch (this->type)
       {
       case serial_ArchiverType::out_binary_bigEndian:
       case serial_ArchiverType::out_binary_littleEndian:{
-
+        tempBuffer.pop(tempBuffer.getLength());
       }
         break;
       case serial_ArchiverType::in_binary_bigEndian:
       case serial_ArchiverType::in_binary_littleEndian:{
         // 那两条读指针的赋值
-        if(data.getLength()==0) return SERIAL_ERR_BUFFER_LACK_DATA;
-        dataStart = *data;
+        if(userBuffer.getLength()==0) return SERIAL_ERR_BUFFER_LACK_DATA;
+        dataStart = *userBuffer;
         lenHandled = 0;
       }
         break;
@@ -62,17 +64,25 @@ private:
 
   /// @brief 如果调用栈上某层operator()是用户直接调用的，那么它很可能需要做特殊收尾
   /// @return 
-  int _conclude(){
+  template <typename ... Ts>
+  int _conclude(Ts&& ... args){
     if(recursiveDepth==1){
       switch (type)
       {
       case serial_ArchiverType::out_binary_littleEndian:
-      case serial_ArchiverType::out_binary_bigEndian:
+      case serial_ArchiverType::out_binary_bigEndian:{
+        // 能够来到这里其实已经说明用户整个对象的序列化成功了
+        if(0==tempBuffer.getLength()) return SERIAL_ERR_UNKNOWN;
+        if(NULL==userBuffer[tempBuffer.getLength()]) return SERIAL_ERR_BUFFER_FILLED;//虽然序列化出来了，但用户提供的缓冲区装不下了
+        memcpy(userBuffer[tempBuffer.getLength()], *tempBuffer, tempBuffer.getLength());
+        userBuffer.push(tempBuffer.getLength());
+        tempBuffer.pop(tempBuffer.getLength());
+      }
         break;
       case serial_ArchiverType::in_binary_littleEndian:
       case serial_ArchiverType::in_binary_bigEndian:{
         // 能够来到这里其实已经说明用户整个对象的反序列化成功了
-        data.pop(lenHandled);//仅在这时弹出数据
+        userBuffer.pop(lenHandled);//仅在这时弹出数据
         dataStart = NULL;
         lenHandled = 0;
       }
@@ -87,19 +97,22 @@ private:
 
 public:
 
-  Buffer& data;
+  Buffer& userBuffer;
   serial_ArchiverType const type;
 
-  serial_Archiver(Buffer& b, serial_ArchiverType t) : data(b), type(t), recursiveDepth(0), dataStart(NULL), lenHandled(0) {}
+  serial_Archiver(Buffer& b, serial_ArchiverType t) : userBuffer(b), type(t), recursiveDepth(0), tempBuffer(16), lenHandled(0), dataStart(NULL) {}
 
   /// @brief 在调用栈处于operator()时，记录当前是第几层递归，即，调用栈上当前有几个operator()
   unsigned int recursiveDepth;
-  
-  /// @brief 正在反序列化时，这个指针记录用户提供的整批数据的开头
-  const void* dataStart;
+
+  /// @brief 序列化时，不一定能完整顺利地序列化完，所以需要先暂存这里
+  Buffer tempBuffer;
 
   /// @brief 正在反序列化时，这个变量记录已经反序列化的数据长度（它们未从Buffer中被弹出，必须回到首层operator()确定了反序列化成功，才一次性弹出）
   unsigned int lenHandled;
+
+  /// @brief 正在反序列化时，这个指针记录用户提供的整批数据的开头
+  const void* dataStart;
 
   // memberOrNonMember()
   // 只要 serialize(serial_Archiver&, T&) 存在，具体的序列化或反序列化就调用它；
@@ -193,7 +206,7 @@ public:
 
   template <typename T> int operator()(T&& a){
     recursiveDepth++;
-    auto ret = _prepare();
+    auto ret = _prepare(std::forward<T>(a));
     if(0>ret) return ret;
 
     ret = prologue(std::forward<T>(a));
@@ -203,7 +216,7 @@ public:
     ret = epilogue(std::forward<T>(a));
     if(0>ret) return ret;
 
-    ret = _conclude();
+    ret = _conclude(std::forward<T>(a));
     if(0>ret) return ret;
     recursiveDepth--;
     return 0;
@@ -211,7 +224,7 @@ public:
 
   template <typename T0, typename ... Ts> int operator()(T0&& a0, Ts&& ... a){
     recursiveDepth++;
-    auto ret = _prepare();
+    auto ret = _prepare(std::forward<T0>(a0), std::forward<Ts>(a)...);
     if(0>ret) return ret;
     
     ret = this->operator()(std::forward<T0>(a0));
@@ -219,7 +232,7 @@ public:
     ret = this->operator()(std::forward<Ts>(a)...);
     if(0>ret) return ret;
 
-    ret = _conclude();
+    ret = _conclude(std::forward<T0>(a0), std::forward<Ts>(a)...);
     if(0>ret) return ret;
     recursiveDepth--;
     return 0;
