@@ -28,12 +28,12 @@ SERIAL_STL_1ARG_DECL(std::vector){
   case serial_ArchiverType::in_binary_littleEndian:
   case serial_ArchiverType::in_binary_bigEndian:{
     // 开头是小端模式的4字节无符号整数记录元素个数
-    if(4>a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
-    auto rp = *(a.data);
+    if(4 + a.lenHandled > a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
+    auto rp = a.dataStart + a.lenHandled;
     uint32_t n;
     memcpy(&n, rp, sizeof(n));
     adaptEndian((char*)(&n), sizeof(n), false, isBigEndian());
-    a.data.pop(sizeof(n));
+    a.lenHandled += 4;
     
     for(; n>0; n--){
       obj.emplace_back();//要求E类型提供无参构造方法
@@ -78,12 +78,12 @@ SERIAL_STL_1ARG_DECL(std::stack){
   case serial_ArchiverType::in_binary_littleEndian:
   case serial_ArchiverType::in_binary_bigEndian:{
     // 开头是小端模式的4字节无符号整数记录元素个数
-    if(4>a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
-    auto rp = *(a.data);
+    if(4 + a.lenHandled > a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
+    auto rp = a.dataStart + a.lenHandled;
     uint32_t n;
     memcpy(&n, rp, sizeof(n));
     adaptEndian((char*)(&n), sizeof(n), false, isBigEndian());
-    a.data.pop(sizeof(n));
+    a.lenHandled += 4;
 
     for(; n>0; n--){
       obj.push(E());//要求E类型提供无参构造方法
@@ -121,12 +121,12 @@ SERIAL_STL_1ARG_DECL(std::queue){
   case serial_ArchiverType::in_binary_littleEndian:
   case serial_ArchiverType::in_binary_bigEndian:{
     // 开头是小端模式的4字节无符号整数记录元素个数
-    if(4>a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
-    auto rp = *(a.data);
+    if(4 + a.lenHandled > a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
+    auto rp = a.dataStart + a.lenHandled;
     uint32_t n;
     memcpy(&n, rp, sizeof(n));
     adaptEndian((char*)(&n), sizeof(n), false, isBigEndian());
-    a.data.pop(sizeof(n));
+    a.lenHandled += 4;
 
     for(; n>0; n--){
       obj.push(E());//要求E类型提供无参构造方法
@@ -164,12 +164,12 @@ SERIAL_STL_1ARG_DECL(std::priority_queue){
   case serial_ArchiverType::in_binary_littleEndian:
   case serial_ArchiverType::in_binary_bigEndian:{
     // 开头是小端模式的4字节无符号整数记录元素个数
-    if(4>a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
-    auto rp = *(a.data);
+    if(4 + a.lenHandled > a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
+    auto rp = a.dataStart + a.lenHandled;
     uint32_t n;
     memcpy(&n, rp, sizeof(n));
     adaptEndian((char*)(&n), sizeof(n), false, isBigEndian());
-    a.data.pop(sizeof(n));
+    a.lenHandled += 4;
 
     for(; n>0; n--){
       E e; //要求E类型提供无参构造方法
@@ -207,12 +207,12 @@ SERIAL_STL_1ARG_DECL(std::set){
   case serial_ArchiverType::in_binary_littleEndian:
   case serial_ArchiverType::in_binary_bigEndian:{
     // 开头是小端模式的4字节无符号整数记录元素个数
-    if(4>a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
-    auto rp = *(a.data);
+    if(4 + a.lenHandled > a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
+    auto rp = a.dataStart + a.lenHandled;
     uint32_t n;
     memcpy(&n, rp, sizeof(n));
     adaptEndian((char*)(&n), sizeof(n), false, isBigEndian());
-    a.data.pop(sizeof(n));
+    a.lenHandled += 4;
 
     for(; n>0; n--){
       E e; //要求E类型提供无参构造方法
@@ -250,12 +250,12 @@ SERIAL_STL_1ARG_DECL(std::multiset){
   case serial_ArchiverType::in_binary_littleEndian:
   case serial_ArchiverType::in_binary_bigEndian:{
     // 开头是小端模式的4字节无符号整数记录元素个数
-    if(4>a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
-    auto rp = *(a.data);
+    if(4 + a.lenHandled > a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
+    auto rp = a.dataStart + a.lenHandled;
     uint32_t n;
     memcpy(&n, rp, sizeof(n));
     adaptEndian((char*)(&n), sizeof(n), false, isBigEndian());
-    a.data.pop(sizeof(n));
+    a.lenHandled += 4;
 
     for(; n>0; n--){
       E e; //要求E类型提供无参构造方法
@@ -293,12 +293,12 @@ SERIAL_STL_1ARG_DECL(std::unordered_set){
   case serial_ArchiverType::in_binary_littleEndian:
   case serial_ArchiverType::in_binary_bigEndian:{
     // 开头是小端模式的4字节无符号整数记录元素个数
-    if(4>a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
-    auto rp = *(a.data);
+    if(4 + a.lenHandled > a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
+    auto rp = a.dataStart + a.lenHandled;
     uint32_t n;
     memcpy(&n, rp, sizeof(n));
     adaptEndian((char*)(&n), sizeof(n), false, isBigEndian());
-    a.data.pop(sizeof(n));
+    a.lenHandled += 4;
 
     for(; n>0; n--){
       E e;//要求E类型提供无参构造方法
@@ -336,12 +336,12 @@ SERIAL_STL_1ARG_DECL(std::unordered_multiset){
   case serial_ArchiverType::in_binary_littleEndian:
   case serial_ArchiverType::in_binary_bigEndian:{
     // 开头是小端模式的4字节无符号整数记录元素个数
-    if(4>a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
-    auto rp = *(a.data);
+    if(4 + a.lenHandled > a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
+    auto rp = a.dataStart + a.lenHandled;
     uint32_t n;
     memcpy(&n, rp, sizeof(n));
     adaptEndian((char*)(&n), sizeof(n), false, isBigEndian());
-    a.data.pop(sizeof(n));
+    a.lenHandled += 4;
 
     for(; n>0; n--){
       E e; //要求E类型提供无参构造方法
@@ -395,12 +395,12 @@ SERIAL_STL_2ARG_DECL(std::map){
   case serial_ArchiverType::in_binary_littleEndian:
   case serial_ArchiverType::in_binary_bigEndian:{
     // 开头是小端模式的4字节无符号整数记录元素个数
-    if(4>a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
-    auto rp = *(a.data);
+    if(4 + a.lenHandled > a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
+    auto rp = a.dataStart + a.lenHandled;
     uint32_t n;
     memcpy(&n, rp, sizeof(n));
     adaptEndian((char*)(&n), sizeof(n), false, isBigEndian());
-    a.data.pop(sizeof(n));
+    a.lenHandled += 4;
 
     for(; n>0; n--){
       K k; V v; //要求K,V类型提供无参构造方法
@@ -438,12 +438,12 @@ SERIAL_STL_2ARG_DECL(std::multimap){
   case serial_ArchiverType::in_binary_littleEndian:
   case serial_ArchiverType::in_binary_bigEndian:{
     // 开头是小端模式的4字节无符号整数记录元素个数
-    if(4>a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
-    auto rp = *(a.data);
+    if(4 + a.lenHandled > a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
+    auto rp = a.dataStart + a.lenHandled;
     uint32_t n;
     memcpy(&n, rp, sizeof(n));
     adaptEndian((char*)(&n), sizeof(n), false, isBigEndian());
-    a.data.pop(sizeof(n));
+    a.lenHandled += 4;
 
     for(; n>0; n--){
       K k; V v; //要求K,V类型提供无参构造方法
@@ -481,12 +481,12 @@ SERIAL_STL_2ARG_DECL(std::unordered_map){
   case serial_ArchiverType::in_binary_littleEndian:
   case serial_ArchiverType::in_binary_bigEndian:{
     // 开头是小端模式的4字节无符号整数记录元素个数
-    if(4>a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
-    auto rp = *(a.data);
+    if(4 + a.lenHandled > a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
+    auto rp = a.dataStart + a.lenHandled;
     uint32_t n;
     memcpy(&n, rp, sizeof(n));
     adaptEndian((char*)(&n), sizeof(n), false, isBigEndian());
-    a.data.pop(sizeof(n));
+    a.lenHandled += 4;
 
     for(; n>0; n--){
       K k; V v; //要求K,V类型提供无参构造方法
@@ -524,12 +524,12 @@ SERIAL_STL_2ARG_DECL(std::unordered_multimap){
   case serial_ArchiverType::in_binary_littleEndian:
   case serial_ArchiverType::in_binary_bigEndian:{
     // 开头是小端模式的4字节无符号整数记录元素个数
-    if(4>a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
-    auto rp = *(a.data);
+    if(4 + a.lenHandled > a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
+    auto rp = a.dataStart + a.lenHandled;
     uint32_t n;
     memcpy(&n, rp, sizeof(n));
     adaptEndian((char*)(&n), sizeof(n), false, isBigEndian());
-    a.data.pop(sizeof(n));
+    a.lenHandled += 4;
 
     for(; n>0; n--){
       K k; V v; //要求K,V类型提供无参构造方法

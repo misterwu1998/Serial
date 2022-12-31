@@ -12,10 +12,11 @@
 
 #define __basic_in_endianAdapted(bool_fromBigEndian)\
 {\
-  if(sizeof(obj) > a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;\
-  memcpy(&obj, *(a.data), sizeof(obj));\
+  if(a.dataStart==NULL) return SERIAL_ERR_UNKNOWN;\
+  if(a.lenHandled + sizeof(obj) > a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;\
+  memcpy(&obj, a.dataStart + a.lenHandled, sizeof(obj));\
   adaptEndian((char*)(&obj), sizeof(obj), bool_fromBigEndian, isBigEndian());\
-  a.data.pop(sizeof(obj));\
+  a.lenHandled += sizeof(obj);\
 }
 
 SERIAL_BASIC_DECL(char){
@@ -260,17 +261,19 @@ SERIAL_BASIC_DECL(std::string){
   case serial_ArchiverType::in_binary_littleEndian:
     // 同大端模式
     // break;
-  case serial_ArchiverType::in_binary_bigEndian:                                                           {
-    if(a.data.getLength()<1) return SERIAL_ERR_BUFFER_LACK_DATA;
-    const char* rp = (const char*)*(a.data);
+  case serial_ArchiverType::in_binary_bigEndian:{
+    if(a.dataStart==NULL) return SERIAL_ERR_UNKNOWN;
+    if(a.lenHandled>=a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;
+    const char* rp = (const char*)(a.dataStart + a.lenHandled);
 
     // 统计原文长度
-    uint32_t len = 0;//原文长度
+    uint32_t len=0;//原文长度
     uint32_t i=0; while(true){
-      if(i>=a.data.getLength()) return SERIAL_ERR_DATA_OBSCURE;//缺收尾符
+      if(a.lenHandled + i >= a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA;//缺收尾符
+      
       if(rp[i]==0) break;//收尾符
       if(rp[i]=='\\'){//反斜杠
-        if(i+1>=a.data.getLength()) return SERIAL_ERR_DATA_OBSCURE; //反斜杠后面不能没数据了
+        if(i+1>=a.data.getLength()) return SERIAL_ERR_BUFFER_LACK_DATA; //反斜杠后面不能没数据了
         i++;//跳过反斜杠
         if(rp[i]!='\\' && rp[i]!='\0') return SERIAL_ERR_DATA_OBSCURE;//逃逸字符仅允许2种
         len++;//有效长度加1
@@ -288,8 +291,8 @@ SERIAL_BASIC_DECL(std::string){
       i++;
     }//此时，i等于buffer中被遍历的数据量，但[i]收尾符未被遍历
 
-    //收尾符也不要了
-    a.data.pop(i+1);                                                                              }
+    a.lenHandled += (i+1);
+  }
     break;
   default:
     return SERIAL_ERR_UNKNOWN;

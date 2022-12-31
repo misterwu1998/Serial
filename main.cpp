@@ -73,12 +73,6 @@ struct Foo
 
 int main(int, char **)
 {
-#if __test_constCast
-    const int iii = (114514);
-    // iii = 1919810; expression must be a modifiable lvalue
-    foo(const_cast<int&>(iii));//这里foo()成功改变了iii的值……GCC编译后这里iii会变，不能说明其它编译器也是这样。const_cast本身就是个未定义行为，去掉了const仅能说明iii不再被保证是常量，实际会不会变，难说
-#endif
-
     Buffer b;
     double d;
     uint32_t i;
@@ -100,7 +94,7 @@ int main(int, char **)
     std::shared_ptr<std::unordered_set<uint64_t>> sp;
     Foo f;
 
-    if (false)
+    if (true)
     {
         // 测试const&、右值引用
         {
@@ -263,6 +257,12 @@ int main(int, char **)
     // a = a^b; b = a^b; a = a^b;
 
     std::cout << "Hello, serial!\n";
+
+#if __test_constCast
+    const int iii = (114514);
+    // iii = 1919810; expression must be a modifiable lvalue
+    foo(const_cast<int&>(iii));//这里foo()成功改变了iii的值……GCC编译后这里iii会变，不能说明其它编译器也是这样。const_cast本身就是个未定义行为，去掉了const仅能说明iii不再被保证是常量，实际会不会变，难说
+#endif
 
 #if __test_rvalue_to_lvalue
     FOO(114514);
