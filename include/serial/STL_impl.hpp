@@ -1,9 +1,9 @@
 #if !defined(_STL_impl_hpp)
 #define _STL_impl_hpp
 
-#include "./STL_decl.hpp"
-#include "./Archiver.hpp"
-#include "./EndianAdapter.hpp"
+#include "serial/STL_decl.hpp"
+#include "serial/Archiver.hpp"
+#include "util/endian.hpp"
 
 SERIAL_STL_1ARG_DECL(std::vector){
   switch (a.type)

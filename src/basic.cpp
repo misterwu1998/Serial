@@ -1,6 +1,6 @@
 #include "serial/basic.hpp"
 #include "serial/Archiver.hpp"
-#include "serial/EndianAdapter.hpp"
+#include "util/endian.hpp"
 
 #define __basic_out_endianAdapted(bool_toBigEndian)\
 {\

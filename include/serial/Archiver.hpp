@@ -3,10 +3,10 @@
 
 #include <string.h>
 #include <utility>
-#include "./Buffer.hpp"
-#include "./EnableIf.hpp"
-#include "./MemberExistenceChecker.hpp"
-#include "./FunctionExistenceChecker.hpp"
+#include "util/Buffer.hpp"
+#include "util/EnableIf.hpp"
+#include "util/MemberExistenceChecker.hpp"
+#include "util/FunctionExistenceChecker.hpp"
 
 #define SERIAL_ERR_NO_SERIALIZE_FUNC -2
 #define SERIAL_ERR_BUFFER_FILLED -3

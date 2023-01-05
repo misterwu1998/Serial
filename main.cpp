@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "serial/EndianAdapter.hpp"
+#include "util/endian.hpp"
 #include "serial/Archiver.hpp"
 #include "serial/basic.hpp"
 #include "serial/STL_impl.hpp"

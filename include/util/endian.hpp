@@ -1,5 +1,13 @@
-#if !defined(_EndianAdapter_hpp)
-#define _EndianAdapter_hpp
+/**
+ * @file endian.hpp
+ * @brief 
+ * 
+ * 一般操作系统都是小端，而通讯协议是大端的
+ * 
+ */
+
+#if !defined(_endian_hpp)
+#define _endian_hpp
 
 /**
  * @brief 
@@ -17,7 +25,7 @@ constexpr bool isBigEndian(){
 /// @param dataLength 
 /// @param bigEndianNow 目前数据符合大端模式
 /// @param toBigEndian 处理后数据要符合大端模式吗？
-void adaptEndian(char* data, unsigned int dataLength, bool bigEndianNow, bool toBigEndian){
+static void adaptEndian(char* data, unsigned int dataLength, bool bigEndianNow, bool toBigEndian){
   if(bigEndianNow!=toBigEndian){
     for(unsigned int i=0; (i<<1)+1 < dataLength; i++){
       data[i] = data[i]^data[dataLength-1-i];
@@ -27,4 +35,5 @@ void adaptEndian(char* data, unsigned int dataLength, bool bigEndianNow, bool to
   }
 }
 
-#endif // _EndianAdapter_hpp
+
+#endif // _endian_hpp

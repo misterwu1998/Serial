@@ -27,6 +27,7 @@ public:\
 
 // int foo(char c, int i, double d, std::string s){return 0;}
 int foo(){return 0;}
+int foo(int& i, std::string&& s){}
 
 CheckFunctionExistence_withParam(foo)
 
@@ -37,6 +38,8 @@ void test_FunctionExistenceChecker(){
   res = FunctionExists_withParam_foo<std::string>::result;
   res = FunctionExists_withParam_foo<char,int,double,std::string>::result;
   res = FunctionExists_withParam_foo<char,int,double,std::string, const char*>::result;
+  res = FunctionExists_withParam_foo<int&, std::string&&>::result;
+  res = FunctionExists_withParam_foo<int&, std::string const&>::result;
 }
 #endif
 
