@@ -243,7 +243,6 @@ SERIAL_BASIC_DECL(std::string){
     // 同大端模式
     // break;
   case serial_ArchiverType::out_binary_bigEndian:                                                          {
-    if(obj.empty()) return 0;
     // 统计待转义字符的个数
     uint32_t nEscape = 0;
     for(auto c : obj){//不包括收尾的空字符
@@ -291,7 +290,11 @@ SERIAL_BASIC_DECL(std::string){
       }
     }
     
-    obj = std::string(len,'\0');
+    if(len==0){//原文是空字符串
+      obj = "";
+    }else{//原文不是空字符串
+      obj = std::string(len,'\0');
+    }
     i=0; for(auto& c : obj){
       if(rp[i]=='\\') i++;//这次碰到反斜杠就直接跳过
       c = rp[i];

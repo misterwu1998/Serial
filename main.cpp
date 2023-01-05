@@ -96,6 +96,17 @@ int main(int, char **)
 
     if (true)
     {
+        // 空字符串
+        {
+            b.pop(b.getLength());
+            s = "";
+            serial_Archiver ao(b, serial_ArchiverType::out_binary_bigEndian);
+            ao(s);
+            s = "abc";
+            serial_Archiver ai(b, serial_ArchiverType::in_binary_bigEndian);
+            ai(s);
+        }
+
         // 测试const&、右值引用
         {
             b.pop(b.getLength());
