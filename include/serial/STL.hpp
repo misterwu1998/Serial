@@ -1,7 +1,20 @@
-#if !defined(_STL_impl_hpp)
-#define _STL_impl_hpp
+#if !defined(_serial_STL_hpp)
+#define _serial_STL_hpp
 
-#include "serial/STL_decl.hpp"
+#define SERIAL_STL_1ARG_DECL(std_classTemplate)\
+template <typename E> inline int serialize(serial_Archiver& a, std_classTemplate<E>& obj)
+
+#define SERIAL_STL_2ARG_DECL(std_classTemplate)\
+template <typename K, typename V> inline int serialize(serial_Archiver& a, std_classTemplate<K,V>& obj)
+
+#include <vector>
+#include <stack>
+#include <queue>
+#include <set>
+#include <unordered_set>
+#include <map>
+#include <unordered_map>
+#include <memory>
 #include "serial/Archiver.hpp"
 #include "util/endian.hpp"
 
@@ -587,4 +600,4 @@ SERIAL_STL_1ARG_DECL(std::shared_ptr){
   return 0;
 }
 
-#endif // _STL_impl_hpp
+#endif // _serial_STL_hpp

@@ -9,10 +9,10 @@ file(GLOB_RECURSE SOURCE_C ./src/*.c)
 
 include_directories(./include/)
 
-add_library(Serial SHARED ${SOURCE_CPP} ${SOURCE_C})
+# add_library(Serial SHARED ${SOURCE_CPP} ${SOURCE_C})
 
-add_executable(testSerial main.cpp)
-target_link_libraries(testSerial Serial)
+add_executable(testSerial main.cpp test_anotherIncluder.cpp)
+# target_link_libraries(testSerial Serial)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
