@@ -50,8 +50,6 @@ public:
   /// @param expectedLength 期望多大的连续空间（字节）
   /// @return 空闲空间首地址，或NULL表示expectedLength字节的连续空间无法开辟
   void* operator[](unsigned int expectedLength){
-    firstBlank %= capacity;
-    firstData %= capacity;
 
     // 已有的数据挪到头部
     if(firstData>0){
@@ -78,7 +76,7 @@ public:
   }
 
   /**
-   * @brief 标记新增数据量; 调用getWritingPtr()并拷贝数据之后，标记才是有意义的
+   * @brief 标记新增数据量; 调用operator[]并拷贝数据之后，标记才是有意义的
    * @param length 
    * @return int64_t 实际被标记的新增数据量; 或-1表示出错
    */
@@ -92,9 +90,9 @@ public:
 
   /// @return 缓冲区内未读数据的首地址；或NULL表示当前没有未读的数据
   const void* operator*(){
-    firstBlank %= capacity;
-    firstData %= capacity;
     if(firstBlank==firstData) return NULL;
+
+    // 数据移动到头部
     if(firstData>0){
       memmove(data, data+firstData, firstBlank-firstData);
       firstBlank -= firstData;
@@ -111,7 +109,7 @@ public:
   int64_t pop(unsigned int length){
     if(capacity >= (1<<7) && getLength()*4 <= capacity){//容量不小，但当中有四分之三都是空的
       // 还要留着的数据挪到头部，然后realloc
-      uint64_t ret;
+      int64_t ret;
       if(getLength()<=length){//这次pop会把全部数据都pop掉
         //不用管数据了
         ret = getLength();
@@ -126,7 +124,7 @@ public:
       capacity >>= 1;//容量减半
       data = ::realloc(data, capacity);
       return ret;
-    }else{
+    }else{//不必考虑缩容
       if(length > firstBlank-firstData){//实际没有那么多数据可以弹出
         length = firstBlank - firstData;
       }
