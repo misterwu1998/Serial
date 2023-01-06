@@ -149,6 +149,7 @@ public:
     return a.serialize(*this);
   }
 
+#if 0 //如果没有合适的函数可以调用，还是应该在编译期报错
   /// @brief 没有合适的函数可以调用
   /// @tparam T 被序列化或反序列化的对象的类型
   /// @param a 被序列化或反序列化的对象
@@ -160,6 +161,7 @@ public:
   int memberOrNonMember(T& a){
     return SERIAL_ERR_NO_SERIALIZE_FUNC;
   }
+#endif //如果没有合适的函数可以调用，还是应该在编译期报错
 
   // 匹配没有被const修饰的对象 //
 
@@ -184,6 +186,7 @@ public:
     return a.serialize(*this);
   }
 
+#if 0 //如果没有合适的函数可以调用，还是应该在编译期报错
   /// @brief 没有合适的函数可以调用
   /// @tparam T 被序列化或反序列化的对象的类型
   /// @param a 被序列化或反序列化的对象（const&）
@@ -195,6 +198,7 @@ public:
   int memberOrNonMember(T const& a){
     return SERIAL_ERR_NO_SERIALIZE_FUNC;
   }
+#endif //如果没有合适的函数可以调用，还是应该在编译期报错
 
   // 匹配被const修饰的对象 //
 

@@ -66,6 +66,7 @@ struct Foo
     std::shared_ptr<uint64_t> sp;
 
     int serialize(serial_Archiver& a){
+    // int anotherFuncName(serial_Archiver& a){//缺少合适的serialize()，应当引发编译报错
         return a(sp,s);
     }
     
