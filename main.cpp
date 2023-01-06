@@ -1,9 +1,7 @@
 #include <iostream>
 #include <string>
 #include "util/endian.hpp"
-#include "serial/Archiver.hpp"
-#include "serial/basic.hpp"
-#include "serial/STL.hpp"
+#include "serial/single_include.hpp"
 
 #define __test_templateExistence 0
 #if __test_templateExistence
