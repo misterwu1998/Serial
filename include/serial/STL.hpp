@@ -569,7 +569,8 @@ SERIAL_STL_1ARG_DECL(std::unique_ptr){
   break;
   case serial_ArchiverType::in_binary_littleEndian:
   case serial_ArchiverType::in_binary_bigEndian:{
-    obj = std::make_unique<E>();//要求E类型提供无参构造方法
+    // make_unique是C++14才支持的，还是算了 obj = std::make_unique<E>();//要求E类型提供无参构造方法
+    obj = std::unique_ptr<E>(new E);//要求E类型提供无参构造方法
     return a(*obj);
   }
   break;
