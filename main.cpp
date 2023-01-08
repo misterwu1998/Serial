@@ -253,6 +253,21 @@ int main(int, char **)
             ai(f);
         }
 
+        // Foo const&
+        {
+            b.pop(b.getLength());
+            f = {
+                std::string("a\0b",3),
+                std::make_shared<uint64_t>(114514)
+            };
+            auto const& fff = f;
+            serial_Archiver ao(b, serial_ArchiverType::out_binary_littleEndian);
+            ao(fff);
+            f = {};
+            serial_Archiver ai(b, serial_ArchiverType::in_binary_littleEndian);
+            ai(f);
+        }
+
     }
 
     // Buffer b;

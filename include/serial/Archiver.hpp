@@ -183,7 +183,8 @@ public:
                          HasMemberFunction_serialize<T>::result
                         > p = nullptr>
   int memberOrNonMember(T const& a){
-    return a.serialize(*this);
+    return const_cast<T&>(a).serialize(*this);
+    // return a.serialize(*this);这句要想编译通过，serialize()必须被const修饰，这显然不行。
   }
 
 #if 0 //如果没有合适的函数可以调用，还是应该在编译期报错
